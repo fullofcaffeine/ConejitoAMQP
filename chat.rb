@@ -25,7 +25,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
     end
 
     get '/app/broadcast_message' do
-      if $exchange.publish(params[:message]) 
+      if $exchange.publish(params[:nickname] + ": " + params[:message]) 
         "OK"
       else
         "FAIL"
@@ -43,7 +43,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
           time += 0.5
         end
         content_type 'text/plain'
-        body(params[:nickname] + ": " + $messages[params[:nickname]].pop)
+        body($messages[params[:nickname]].pop)
       end
     end
     Sinatra::Application.run!
