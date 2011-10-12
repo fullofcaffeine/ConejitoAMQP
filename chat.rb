@@ -43,7 +43,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
           time += 0.5
         end
         content_type 'text/plain'
-        body($messages[params[:nickname]].pop)
+        body(params[:nickname] + ": " + $messages[params[:nickname]].pop)
       end
     end
     Sinatra::Application.run!
