@@ -32,13 +32,18 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
       end
     end
 
-    get '/app/fetch_messages' do
-      #$queues[params[:nickname]].pop do |metadata,payload|
-      #  puts payload.inspect
-      #end
-      #
-      if $messages.length > 0 
-        return $messages[params[:nickname]].pop
+    aget '/app/fetch_messages' do
+      EM.defer do
+        time = 0 
+        until time > 100
+          count = $messages[params[:nickname]].length
+          puts "*** count == " + count.to_s
+          break if count > 0
+          sleep 0.5
+          time += 0.5
+        end
+        content_type 'text/plain'
+        body($messages[params[:nickname]].pop)
       end
     end
     Sinatra::Application.run!
