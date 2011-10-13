@@ -19,7 +19,6 @@ Chat = {
 
   _setup:function() {
     var _this = Chat;
-    alert('d');
     _this._nickname = $('#nickname').attr('value');
     $.ajax({
       url:"/app/setup",
@@ -68,7 +67,7 @@ Chat = {
     $.ajax({
       url:"/app/broadcast_message",
       data: "nickname="+_this._nickname+"&message="+$("#chat-msg").attr('value'),
-      onsuccess:function(data) {
+      success:function(data) {
         $('#chat-msg').attr('value','');
       }
       });
