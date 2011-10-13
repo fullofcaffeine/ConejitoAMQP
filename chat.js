@@ -67,7 +67,10 @@ Chat = {
     var _this = Chat;
     $.ajax({
       url:"/app/broadcast_message",
-      data: "nickname="+_this._nickname+"&message="+$("#chat-msg").attr('value')
+      data: "nickname="+_this._nickname+"&message="+$("#chat-msg").attr('value'),
+      onsuccess:function(data) {
+        $('#chat-msg').attr('value','');
+      }
       });
       return false;
   }
