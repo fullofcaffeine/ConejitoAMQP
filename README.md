@@ -1,5 +1,5 @@
 # Tame The F* (fine) Rabbit, The Chat
-###aka Conjito
+###aka Conejito
 
 A sample application for my 2011 MagmaRails presentation.
 
