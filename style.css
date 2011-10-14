@@ -4,16 +4,12 @@
 }
 
 #wrapper {
-
   margin-left:20px;
   margin-top:20px;
   max-width:750px;
-
 }
 #header {
-
   margin:10px 5px 3px 30px;
-
 }
 
 #wrapper h1 {
@@ -57,17 +53,13 @@
   background: url(rabbit.png) no-repeat;
   text-indent: 173px;
   padding-top: 50px;
-
-
 }
 
 #presentation_item{
-
   height:60px; 
   background: url(presentation_icon.png) no-repeat left;
   padding-left: 63px;
   padding-top: 33px;
-
 }
 
 #presentation_item a {
@@ -79,7 +71,6 @@
   margin-left: 28px; 
   font-size:12px;
   border-top: 1px solid black;
-
 }
 
 #footer span {

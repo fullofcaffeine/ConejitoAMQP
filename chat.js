@@ -1,7 +1,6 @@
 Chat = {
   _nickname:null,
   _interval_id:null,
-
   initialize:function() {
     this._init_handlers();
   },
@@ -28,7 +27,6 @@ Chat = {
         var fm = _this._fetch_messages;
         fm();
       }
-
     });
     return false;
   },
@@ -47,7 +45,15 @@ Chat = {
           _this._fetch_messages,
           50
         );
-      }});
+      },
+      error:function() {
+        setTimeout(
+          _this._fetch_messages,
+          50
+        );
+      }
+    });
+
   },
 
   _append_message:function(msg) {
@@ -63,6 +69,12 @@ Chat = {
   },
 
   _broadcast_message:function() {
+    if ($("#chat-msg").attr('value') == '/clear') {
+      $('#messages').empty();
+      $('#chat-msg').attr('value','');
+      return false
+    }
+
     var _this = Chat;
     $.ajax({
       url:"/app/broadcast_message",

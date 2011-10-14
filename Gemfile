@@ -2,6 +2,5 @@ source :rubygems
 
 gem 'amqp'
 gem 'sinatra'
-gem 'shotgun'
+gem 'thin'
 gem 'async_sinatra'
-gem 'vlad'
