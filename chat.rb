@@ -13,17 +13,16 @@ require 'sinatra'
 require 'sinatra/async'
 require 'thin'
 require 'amqp'
-require 'ruby-debug'
 
-
-BEVERAGES = ['beer', 
-             'whiskey', 
-             'tequila', 
-             'absinto', 
-             'coke',
-             'water',
-             'marihuana',
-             'coke-anne'
+BEVERAGES = ['some beer', 
+             'some whiskey', 
+             'a bottle of tequila', 
+             'one glass of absinto', 
+             'a diet coke',
+             'some water',
+             'some marihuana',
+             'some coke-anne',
+             'nothing, and asks others where is the bathroom...'
             ] 
 
 INTRO_MESSAGES = %{Hi (nickname), welcome to the chat!
@@ -73,7 +72,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
 
    $channel.queue(nickname).bind($direct_exchange, :routing_key => nickname)
 
-   $exchange.publish("<strong>" + params[:nickname] + " entered the room and brough some #{BEVERAGES[rand(BEVERAGES.size)]}!</strong>")
+   $exchange.publish("<strong>" + params[:nickname] + "</strong> entered the room and brough <strong>#{BEVERAGES[rand(BEVERAGES.size)]}!</strong>")
   end
 
   get '/app/get_instructions' do
@@ -84,7 +83,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
   end
 
   get '/app/broadcast_message' do
-    $exchange.publish(params[:nickname] + ": " + params[:message]) 
+    $exchange.publish("<strong>"+params[:nickname] + "</strong>: " + params[:message]) 
   end
 
   #For long polling, we use EventMachine's defer to defer it in the background so 
@@ -103,6 +102,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
       body($messages[params[:nickname]].pop)
     end
   end
+  
   Sinatra::Application.run!
 end
 

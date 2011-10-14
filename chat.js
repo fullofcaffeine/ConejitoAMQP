@@ -6,10 +6,12 @@ Chat = {
   },
 
   _init_handlers:function() {
-    this._setup_dialog = $('#setup_dialog').dialog(
+    $('#setup_dialog').dialog(
       {height:115,
         width:507,
-        resizable:false
+        resizable:false,
+        position:[305,200]
+
     }
     );
     $('#setup_form').bind('submit',this._setup);
