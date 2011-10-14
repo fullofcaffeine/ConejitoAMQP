@@ -15,6 +15,17 @@ require 'thin'
 require 'amqp'
 require 'ruby-debug'
 
+
+BEVERAGES = ['beer', 
+             'whiskey', 
+             'tequila', 
+             'absinto', 
+             'coke',
+             'water',
+             'marihuana',
+             'coke-anne'
+            ] 
+
 INTRO_MESSAGES = %{Hi (nickname), welcome to the chat!
 This application is implemented by creating a queue for each user that connects, Then, a fanout exchange 
 named "sample" is created as well. The messages are sent to the fanout which in turn distribute them to 
@@ -36,9 +47,13 @@ $exchange = nil
 $messages = {}
 
 
+
+
+
 AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |connection|
   $channel = AMQP::Channel.new(connection)
   $exchange = $channel.fanout('sample')
+  $direct_exchange = $channel.direct('instructions')
 
   get '/app/setup' do
     if $queues[params[:nickname]]
@@ -47,7 +62,7 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
     end
 
     nickname = params[:nickname] || "Rabbit#{rand.to_s.split('.')[1]}"
-    $queues[nickname] = $channel.queue(nickname).bind($exchange, :auto_delete => true)
+    $queues[nickname] = $channel.queue(nickname).bind($exchange)
     $messages[nickname] = []
     $queues[params[:nickname]].subscribe(:ack => true) do |header,msg| 
       $messages[nickname] << msg 
@@ -55,11 +70,16 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
       #All the messages will be sent again
       header.ack
     end
-    temp_direct_exchange = $channel.direct('intro_messages')
-    $channel.queue(nickname).bind(temp_direct_exchange)
-    msgs = INTRO_MESSAGES.gsub(/\(nickname\)/,nickname).split("\n").push("").reverse
+
+   $channel.queue(nickname).bind($direct_exchange, :routing_key => nickname)
+
+   $exchange.publish("<strong>" + params[:nickname] + " entered the room and brough some #{BEVERAGES[rand(BEVERAGES.size)]}!</strong>")
+  end
+
+  get '/app/get_instructions' do
+    msgs = INTRO_MESSAGES.gsub(/\(nickname\)/,params[:nickname]).split("\n").push("").reverse
     msgs.each do |msg|
-      temp_direct_exchange.publish(msg)
+     $direct_exchange.publish(msg,:routing_key => params[:nickname])
     end
   end
 

@@ -14,7 +14,9 @@ Chat = {
     );
     $('#setup_form').bind('submit',this._setup);
     $('#chat_form').bind('submit',this._broadcast_message);
+
   },
+
 
   _setup:function() {
     var _this = Chat;
@@ -23,12 +25,27 @@ Chat = {
       url:"/app/setup",
       data: {nickname:_this._nickname},
       success:function(data) {
+        _this._append_message('Hi ' + '<strong>'+_this._nickname+'</strong>\
+                              <a href="javascript:void(0)" id="'+_this._nickname+'_instruction_link">click here</a> for\
+                                additional instructions.');
+
+        $('#'+_this._nickname+'_instruction_link').bind('click',_this._get_instructions);
         $('#setup_dialog').dialog('close');
         var fm = _this._fetch_messages;
         fm();
       }
     });
     return false;
+  },
+
+  _get_instructions:function() {
+    var _this = Chat;
+    $.ajax({
+      type:"GET",
+      url:"/app/get_instructions",
+      async:true,
+      data:"nickname="+_this._nickname});
+      return false;
   },
 
   _fetch_messages:function() {
@@ -82,8 +99,8 @@ Chat = {
       success:function(data) {
         $('#chat-msg').attr('value','');
       }
-      });
-      return false;
+    });
+    return false;
   }
 }
 
