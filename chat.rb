@@ -58,7 +58,6 @@ AMQP.start(:host => 'localhost', :user => 'guest', :pass => 'magmarails') do |co
     temp_direct_exchange = $channel.direct('intro_messages')
     $channel.queue(nickname).bind(temp_direct_exchange)
     msgs = INTRO_MESSAGES.gsub(/\(nickname\)/,nickname).split("\n").push("").reverse
-    debugger
     msgs.each do |msg|
       temp_direct_exchange.publish(msg)
     end
